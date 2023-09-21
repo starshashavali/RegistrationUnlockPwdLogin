@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registration</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for the registration form */
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .registration-form {
+            background-color: #ffffff;
+            border: 1px solid #dcdcdc;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .registration-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .registration-header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 3px;
+        }
+        .registration-button {
+            margin-top: 20px;
+        }
+        .login-link {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="registration-form">
+                <div class="registration-header">
+                    <h1>Registration Form</h1>
+                </div>
+                <p th:text="${msg}" class="text-success"></p>
+                <form th:object="${user}" th:action="@{/user}" method="POST">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" class="form-control" th:field="*{name}" id="name">
+                        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" class="form-control" th:field="*{email}" id="email">
+                        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender" class="form-label">Gender:</label>
+                        <select class="form-control" th:field="*{gender}" id="gender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger"></div>
+                    </div>
+                    <div class="registration-button">
+                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                    </div>
+                </form>
+                <div class="login-link">
+                    <p>Already have an account? <a href="/login">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Include Bootstrap JS and jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
