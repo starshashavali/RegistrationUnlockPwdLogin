@@ -1,9 +1,12 @@
 package com.gis.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gis.controller.UserController;
 import com.gis.dto.LoginRequest;
 import com.gis.dto.UnlockRequest;
 import com.gis.dto.UserRequest;
@@ -16,6 +19,8 @@ import com.gis.utils.PwdUtils;
 @Service
 public class UserServiceImpl implements UserService {
 
+	private Logger logger = LoggerFactory.getLogger(UserController.class);
+
 	@Autowired
 	UserRepository userRepository;
 
@@ -26,9 +31,11 @@ public class UserServiceImpl implements UserService {
 	private EmailUtils emailUtils;
 
 	public String createUser(UserRequest request) {
+		logger.info(" request to createUser : " + request);
 		User entity = userRepository.findByEmail(request.getEmail());
 		if (entity != null) {
 			if ("Locked".equalsIgnoreCase(entity.getAccountStatus())) {
+				logger.warn(" request to Your account need to be unlocked ");
 				return "Your account need to be unlocked";
 			} else if ("Unlocked".equalsIgnoreCase(entity.getAccountStatus())) {
 				return "Email already exists ,Please login !";
@@ -44,18 +51,13 @@ public class UserServiceImpl implements UserService {
 
 		sb.append("<h1>Hey, " + request.getName() + "</h1>");
 
-		sb.append("<h3>Unlock your account with this temporary password</h3>");
 
 		sb.append("<br>");
 
-		sb.append("<p>Temporary password : <B>" + pwd + "</B> </p>");
+		sb.append("<p>Temporary password : <B>" + pwd + "</B> </p>" +request.getEmail());
 
-		sb.append("<br>");
 
-		sb.append("<a href=\"http://localhost:9090/unlock?mail=" + request.getEmail()
-				+ "\">Click here to unlock your account </a>");
-
-		emailUtils.sendEmail(request.getEmail(), "Unlock your account ", String.valueOf(sb));
+		emailUtils.sendEmail(request.getEmail(), "Unlock your account with this temporary password", String.valueOf(sb));
 
 		user.setAccountStatus("Locked");
 		user.setPassword(pwd);
@@ -67,6 +69,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public String unlockAccount(UnlockRequest form) {
+		logger.info(" request to UnlockRequest : " + form);
+
 		User user = userRepository.findByEmail(form.getEmail());
 
 		if (!form.getTempPassword().equals(user.getPassword())) {
@@ -83,11 +87,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public String loginUser(LoginRequest form) {
+		logger.info(" request to LoginRequest : " + form);
 		User entity = userRepository.findByEmailAndPassword(form.getEmail(), form.getPassword());
 		if (entity == null) {
 			return "Invalid credentials";
 		}
-		if (entity.getAccountStatus().equalsIgnoreCase("locked")) {
+		if ("Locked".equalsIgnoreCase(entity.getAccountStatus())) {
 			return "Your account need to be unlocked";
 		}
 		return "success";

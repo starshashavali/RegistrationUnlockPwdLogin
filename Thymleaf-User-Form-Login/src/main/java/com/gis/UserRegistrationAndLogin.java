@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ThymleafUserFormLoginApplication {
+public class UserRegistrationAndLogin {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ThymleafUserFormLoginApplication.class, args);
+		SpringApplication.run(UserRegistrationAndLogin.class, args);
 	}
 
 }
